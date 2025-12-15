@@ -1,0 +1,82 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      DB_USER: app_user
+      DB_PASSWORD: app_pass
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: app_db
+      SERVER_PORT: 8080
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+  admin-page:
+    build:
+      context: ./adminPage
+      dockerfile: Dockerfile.dev
+    container_name: adminPage
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./adminPage:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  client-page:
+    build:
+      context: ./clientPage
+      dockerfile: Dockerfile.dev
+    container_name: clientPage
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./adminPage:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  db:
+    image: mysql:8.0
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: app_db
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: app_pass
+      MYSQL_ROOT_PASSWORD: root_pass
+      TZ: Asia/Tokyo
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql_data:
+
+networks:
+  app-network:
+    driver: bridge

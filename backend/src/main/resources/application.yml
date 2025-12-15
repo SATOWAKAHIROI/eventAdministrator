@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: Backend Application
+
+  datasource:
+    url: ${JDBC_DATABASE_URL:jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:app_db}?useSSL=false&serverTimezone=Asia/Tokyo&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&connectionCollation=utf8mb4_unicode_ci}
+    username: ${JDBC_DATABASE_USERNAME:${DB_USER:root}}
+    password: ${JDBC_DATABASE_PASSWORD:${DB_PASSWORD:password}}
+    driver-class-name: ${JDBC_DATABASE_DRIVER:${DB_DRIVER:com.mysql.cj.jdbc.Driver}}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: ${HIBERNATE_DIALECT:org.hibernate.dialect.MySQL8Dialect}
+
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /api
+
+jwt:
+  # JWT署名用の秘密鍵 (本番環境では環境変数から設定すること)
+  # 注意: この値は最低512ビット(64文字)必要
+  secret: ${JWT_SECRET:accounting-app-jwt-secret-key-for-development-environment-minimum-512-bits-required-please-change-in-production}
+  # トークン有効期限(ミリ秒) デフォルト: 24時間
+  expiration: ${JWT_EXPIRATION:86400000}
