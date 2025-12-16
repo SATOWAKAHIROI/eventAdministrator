@@ -38,8 +38,9 @@ public class AdminEventController {
         return ResponseEntity.ok(ApiResponse.success(eventResponse));
     }
 
-    @PostMapping
-    public ResponseEntity<ApiResponse<EventResponse>> createEvent(@Valid @RequestBody EventRequest eventRequest) {
+    @PostMapping("/{userId}")
+    public ResponseEntity<ApiResponse<EventResponse>> createEvent(@Valid @RequestBody EventRequest eventRequest,
+            @PathVariable Long userId) {
         // イベント作成処理は後で実装する
         EventResponse eventResponse = new EventResponse();
 
