@@ -5,18 +5,42 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.example.backend.dto.requests.LoginRequest;
 import com.example.backend.dto.requests.UserRequest;
+import com.example.backend.dto.response.AuthResponse;
 import com.example.backend.dto.response.UserResponse;
 import com.example.backend.entity.User;
 import com.example.backend.entity.User.RoleType;
+import com.example.backend.exception.BusinessException;
+import com.example.backend.exception.UnauthorizedException;
 import com.example.backend.repository.UserRepository;
+import com.example.backend.security.JwtTokenProvider;
 
 @Service
 public class AdminUserService {
     private final UserRepository userRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public AdminUserService(UserRepository userRepository) {
+    public AdminUserService(UserRepository userRepository, JwtTokenProvider jwtTokenProvider) {
         this.userRepository = userRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
+
+    public AuthResponse login(LoginRequest loginRequest) {
+        User user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new UnauthorizedException("メールアドレスまたはパスワードが正しくありません"));
+
+        boolean passCheck = user.getPassword().equals(loginRequest.getPassword());
+
+        if (!passCheck) {
+            throw new UnauthorizedException("メールアドレスまたはパスワードが正しくありません");
+        }
+
+        String token = jwtTokenProvider.generateToken(user.getId(), user.getEmail(), user.getUserRole());
+        UserResponse userResponse = UserResponse.from(user);
+        AuthResponse authResponse = new AuthResponse(token, userResponse);
+
+        return authResponse;
     }
 
     public List<UserResponse> getAllUser() {
@@ -28,12 +52,7 @@ public class AdminUserService {
     }
 
     public UserResponse getUserById(Long id) {
-        User user = userRepository.findById(id).orElse(null);
-
-        // エラー処理は後で実装
-        if (user == null) {
-            return null;
-        }
+        User user = userRepository.findById(id).orElseThrow(() -> new BusinessException("該当のユーザーが見つかりません"));
 
         return UserResponse.from(user);
     }
@@ -41,7 +60,7 @@ public class AdminUserService {
     public UserResponse createUser(UserRequest userRequest) {
         // エラー処理は後で実装
         if (userRepository.existsByEmail(userRequest.getEmail())) {
-            return null;
+            throw new BusinessException("そのメールアドレスはすでに他のユーザーが使用しています");
         }
 
         User user = new User();
@@ -57,16 +76,14 @@ public class AdminUserService {
     }
 
     public UserResponse editUserById(UserRequest userRequest, Long id) {
-        User user = userRepository.findById(id).orElse(null);
+        User user = userRepository.findById(id).orElseThrow(() -> new BusinessException("該当するユーザーが見つかりません"));
 
-        // エラー処理は後で実装
-        if (user == null) {
-            return null;
-        }
+        boolean isExistsEmail = userRepository.existsByEmail(userRequest.getEmail());
+        boolean isEqualEmail = user.getEmail().equals(userRequest.getEmail());
 
-        // エラー処理は後で実装
-        if (userRepository.existsByEmail(userRequest.getEmail())) {
-            return null;
+        // 指定したメールアドレスがすでに存在し、かつ自身でない場合
+        if (isExistsEmail && !isEqualEmail) {
+            throw new BusinessException("そのメールアドレスはすでに他のユーザーが使用しています");
         }
 
         user.setName(userRequest.getName());
@@ -80,8 +97,9 @@ public class AdminUserService {
     }
 
     public void deleteUserById(Long id) {
-        if (userRepository.existsById(id)) {
-            deleteUserById(id);
+        if (!userRepository.existsById(id)) {
+            throw new BusinessException("該当のユーザーはすでに存在していません");
         }
+        deleteUserById(id);
     }
 }
