@@ -1,6 +1,5 @@
 package com.example.backend.controller.admin;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -32,7 +31,7 @@ public class AdminUserController {
         this.adminUserService = adminUserService;
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<ApiResponse<AuthResponse>> userAuth(@Valid @RequestBody LoginRequest loginRequest) {
         AuthResponse authResponse = adminUserService.login(loginRequest);
 
