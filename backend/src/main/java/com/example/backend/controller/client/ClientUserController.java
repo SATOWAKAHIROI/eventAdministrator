@@ -28,7 +28,7 @@ public class ClientUserController {
         this.clientUserService = clientUserService;
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<ApiResponse<AuthResponse>> userAuth(@Valid @RequestBody LoginRequest loginRequest) {
         AuthResponse authResponse = clientUserService.login(loginRequest);
 
