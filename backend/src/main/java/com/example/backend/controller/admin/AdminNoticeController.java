@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.backend.dto.common.ApiResponse;
 import com.example.backend.dto.requests.NoticeRequest;
 import com.example.backend.dto.response.NoticeResponse;
+import com.example.backend.service.admin.AdminNoticeService;
 
 import jakarta.validation.Valid;
 
@@ -23,26 +24,30 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RestController
 @RequestMapping("/admin/notice")
 public class AdminNoticeController {
+
+    private final AdminNoticeService adminNoticeService;
+
+    public AdminNoticeController(AdminNoticeService adminNoticeService) {
+        this.adminNoticeService = adminNoticeService;
+    }
+
     @GetMapping()
     public ResponseEntity<ApiResponse<List<NoticeResponse>>> getAllNotice() {
-        // お知らせ取得処理は後で実装する
-        List<NoticeResponse> responses = new ArrayList<>();
+        List<NoticeResponse> responses = adminNoticeService.getAllNotice();
         return ResponseEntity.ok(ApiResponse.success(responses));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<NoticeResponse>> getNoticeById(@Valid @RequestBody NoticeRequest noticeRequest,
-            @PathVariable Long id) {
-        // お知らせ取得処理は後で実装する
-        NoticeResponse noticeResponse = new NoticeResponse();
+    public ResponseEntity<ApiResponse<NoticeResponse>> getNoticeById(@PathVariable Long id) {
+        NoticeResponse noticeResponse = adminNoticeService.getNoticeById(id);
 
         return ResponseEntity.ok(ApiResponse.success(noticeResponse));
     }
 
-    @PostMapping()
-    public ResponseEntity<ApiResponse<NoticeResponse>> createNotice(@Valid @RequestBody NoticeRequest noticeRequest) {
-        // お知らせ作成処理は後で実装する
-        NoticeResponse noticeResponse = new NoticeResponse();
+    @PostMapping("/{userId}")
+    public ResponseEntity<ApiResponse<NoticeResponse>> createNotice(@Valid @RequestBody NoticeRequest noticeRequest,
+            @PathVariable Long userId) {
+        NoticeResponse noticeResponse = adminNoticeService.createNotice(noticeRequest, userId);
 
         return ResponseEntity.ok(ApiResponse.success(noticeResponse));
     }
@@ -50,15 +55,14 @@ public class AdminNoticeController {
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<NoticeResponse>> editNoticeById(@PathVariable Long id,
             @Valid @RequestBody NoticeRequest noticeRequest) {
-        // お知らせ編集処理は後で実装する
-        NoticeResponse noticeResponse = new NoticeResponse();
+        NoticeResponse noticeResponse = adminNoticeService.editNoticeById(noticeRequest, id);
 
         return ResponseEntity.ok(ApiResponse.success(noticeResponse));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteNoticeById(@PathVariable Long id) {
-        // お知らせ削除処理は後で実装する
+        adminNoticeService.deleteNoticeById(id);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 

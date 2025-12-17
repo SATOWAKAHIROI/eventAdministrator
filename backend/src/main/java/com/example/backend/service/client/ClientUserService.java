@@ -1,7 +1,4 @@
-package com.example.backend.service.admin;
-
-import java.util.List;
-import java.util.stream.Collectors;
+package com.example.backend.service.client;
 
 import org.springframework.stereotype.Service;
 
@@ -17,11 +14,11 @@ import com.example.backend.repository.UserRepository;
 import com.example.backend.security.JwtTokenProvider;
 
 @Service
-public class AdminUserService {
+public class ClientUserService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public AdminUserService(UserRepository userRepository, JwtTokenProvider jwtTokenProvider) {
+    public ClientUserService(UserRepository userRepository, JwtTokenProvider jwtTokenProvider) {
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
     }
@@ -36,31 +33,11 @@ public class AdminUserService {
             throw new UnauthorizedException("メールアドレスまたはパスワードが正しくありません");
         }
 
-        boolean roleCheck = user.getUserRole() == RoleType.ADMIN;
-
-        if (!roleCheck) {
-            throw new UnauthorizedException("このサイトは管理者権限がないユーザーではアクセスできません");
-        }
-
         String token = jwtTokenProvider.generateToken(user.getId(), user.getEmail(), user.getUserRole());
         UserResponse userResponse = UserResponse.from(user);
         AuthResponse authResponse = new AuthResponse(token, userResponse);
 
         return authResponse;
-    }
-
-    public List<UserResponse> getAllUser() {
-        List<User> users = userRepository.findAll();
-
-        List<UserResponse> userResponses = users.stream().map(UserResponse::from).collect(Collectors.toList());
-
-        return userResponses;
-    }
-
-    public UserResponse getUserById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new BusinessException("該当のユーザーが見つかりません"));
-
-        return UserResponse.from(user);
     }
 
     public UserResponse createUser(UserRequest userRequest) {
@@ -73,9 +50,15 @@ public class AdminUserService {
         user.setName(userRequest.getName());
         user.setEmail(userRequest.getEmail());
         user.setPassword(userRequest.getPassword());
-        user.setUserRole(RoleType.ADMIN);
+        user.setUserRole(RoleType.VIEWER);
 
         userRepository.save(user);
+
+        return UserResponse.from(user);
+    }
+
+    public UserResponse getUserById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new BusinessException("該当のユーザーが見つかりません"));
 
         return UserResponse.from(user);
     }

@@ -14,6 +14,7 @@ import com.example.backend.dto.requests.LoginRequest;
 import com.example.backend.dto.requests.UserRequest;
 import com.example.backend.dto.response.AuthResponse;
 import com.example.backend.dto.response.UserResponse;
+import com.example.backend.service.client.ClientUserService;
 import com.example.backend.dto.common.ApiResponse;
 
 import jakarta.validation.Valid;
@@ -21,41 +22,42 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/client/user")
 public class ClientUserController {
+    private final ClientUserService clientUserService;
+
+    public ClientUserController(ClientUserService clientUserService) {
+        this.clientUserService = clientUserService;
+    }
+
     @GetMapping("/login")
     public ResponseEntity<ApiResponse<AuthResponse>> userAuth(@Valid @RequestBody LoginRequest loginRequest) {
-        // 認証ロジックは後で実装
-        AuthResponse authResponse = new AuthResponse(null, null);
+        AuthResponse authResponse = clientUserService.login(loginRequest);
 
         return ResponseEntity.ok(ApiResponse.success(authResponse));
     }
 
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<UserResponse>> userCreate(@Valid @RequestBody UserRequest userRequest) {
-        // ユーザー登録ロジックは後で作成する
-        UserResponse userResponse = new UserResponse();
+        UserResponse userResponse = clientUserService.createUser(userRequest);
 
         return ResponseEntity.ok(ApiResponse.success(userResponse));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<UserResponse>> getUserById(@Valid @RequestBody UserRequest userRequest,
-            @PathVariable Long id) {
-        // ユーザー取得ロジックは後で作成する
-        UserResponse userResponse = new UserResponse();
+    public ResponseEntity<ApiResponse<UserResponse>> getUserById(@PathVariable Long id) {
+        UserResponse userResponse = clientUserService.getUserById(id);
         return ResponseEntity.ok(ApiResponse.success(userResponse));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<UserResponse>> editUserbyId(@Valid @RequestBody UserRequest userRequest,
             @PathVariable Long id) {
-        // ユーザー編集ロジックは後で作成する
-        UserResponse userResponse = new UserResponse();
+        UserResponse userResponse = clientUserService.editUserById(userRequest, id);
         return ResponseEntity.ok(ApiResponse.success(userResponse));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteUserbyId(@PathVariable Long id) {
-        // ユーザー削除ロジックは後で作成する
+        clientUserService.deleteUserById(id);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 }

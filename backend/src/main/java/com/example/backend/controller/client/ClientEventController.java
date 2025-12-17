@@ -1,36 +1,35 @@
 package com.example.backend.controller.client;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.backend.dto.common.ApiResponse;
-import com.example.backend.dto.requests.EventRequest;
 import com.example.backend.dto.response.EventResponse;
-
-import jakarta.validation.Valid;
+import com.example.backend.service.client.ClientEventService;
 
 @RestController
 @RequestMapping("/client/event")
 public class ClientEventController {
+    private final ClientEventService clientEventService;
+
+    public ClientEventController(ClientEventService clientEventService) {
+        this.clientEventService = clientEventService;
+    }
+
     @GetMapping
     public ResponseEntity<ApiResponse<List<EventResponse>>> getAllEvent() {
-        // イベント取得処理は後で実装する
-        List<EventResponse> responses = new ArrayList<>();
+        List<EventResponse> responses = clientEventService.getAllEvent();
         return ResponseEntity.ok(ApiResponse.success(responses));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<EventResponse>> getEventById(@Valid @RequestBody EventRequest eventRequest,
-            @PathVariable Long id) {
-        // イベント取得処理は後で実装する
-        EventResponse eventResponse = new EventResponse();
+    public ResponseEntity<ApiResponse<EventResponse>> getEventById(@PathVariable Long id) {
+        EventResponse eventResponse = clientEventService.getEventById(id);
         return ResponseEntity.ok(ApiResponse.success(eventResponse));
     }
 }

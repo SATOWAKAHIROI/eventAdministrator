@@ -16,6 +16,7 @@ import com.example.backend.dto.requests.LoginRequest;
 import com.example.backend.dto.requests.UserRequest;
 import com.example.backend.dto.response.AuthResponse;
 import com.example.backend.dto.response.UserResponse;
+import com.example.backend.service.admin.AdminUserService;
 
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,48 +26,48 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RequestMapping("/admin/user")
 public class AdminUserController {
 
+    private final AdminUserService adminUserService;
+
+    public AdminUserController(AdminUserService adminUserService) {
+        this.adminUserService = adminUserService;
+    }
+
     @GetMapping("/login")
     public ResponseEntity<ApiResponse<AuthResponse>> userAuth(@Valid @RequestBody LoginRequest loginRequest) {
-        // 認証ロジックは後で実装
-        AuthResponse authResponse = new AuthResponse(null, null);
+        AuthResponse authResponse = adminUserService.login(loginRequest);
 
         return ResponseEntity.ok(ApiResponse.success(authResponse));
     }
 
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<UserResponse>> userCreate(@Valid @RequestBody UserRequest userRequest) {
-        // ユーザー登録ロジックは後で作成する
-        UserResponse userResponse = new UserResponse();
+        UserResponse userResponse = adminUserService.createUser(userRequest);
 
         return ResponseEntity.ok(ApiResponse.success(userResponse));
     }
 
     @GetMapping()
-    public ResponseEntity<ApiResponse<List<UserResponse>>> getMethodName() {
-        // ユーザー一覧取得ロジックは後で作成する
-        List<UserResponse> userResponses = new ArrayList<>();
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getAllUser() {
+        List<UserResponse> userResponses = adminUserService.getAllUser();
         return ResponseEntity.ok(ApiResponse.success(userResponses));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<UserResponse>> getUserById(@Valid @RequestBody UserRequest userRequest,
-            @PathVariable Long id) {
-        // ユーザー取得ロジックは後で作成する
-        UserResponse userResponse = new UserResponse();
+    public ResponseEntity<ApiResponse<UserResponse>> getUserById(@PathVariable Long id) {
+        UserResponse userResponse = adminUserService.getUserById(id);
         return ResponseEntity.ok(ApiResponse.success(userResponse));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<UserResponse>> editUserbyId(@Valid @RequestBody UserRequest userRequest,
             @PathVariable Long id) {
-        // ユーザー編集ロジックは後で作成する
-        UserResponse userResponse = new UserResponse();
+        UserResponse userResponse = adminUserService.editUserById(userRequest, id);
         return ResponseEntity.ok(ApiResponse.success(userResponse));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteUserbyId(@PathVariable Long id) {
-        // ユーザー削除ロジックは後で作成する
+        adminUserService.deleteUserById(id);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
