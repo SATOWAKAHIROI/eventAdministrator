@@ -9,6 +9,7 @@ import com.example.backend.dto.requests.EventRequest;
 import com.example.backend.dto.response.EventResponse;
 import com.example.backend.entity.Event;
 import com.example.backend.entity.User;
+import com.example.backend.exception.BusinessException;
 import com.example.backend.repository.EventRepository;
 import com.example.backend.repository.UserRepository;
 
@@ -30,20 +31,14 @@ public class AdminEventService {
     }
 
     public EventResponse getEventById(Long id) {
-        // エラー処理は後で実装
-        Event event = eventRepository.findById(id).orElse(null);
+        Event event = eventRepository.findById(id).orElseThrow(() -> new BusinessException("該当のイベントは存在しません"));
         EventResponse eventResponse = EventResponse.from(event);
 
         return eventResponse;
     }
 
     public EventResponse createEvent(EventRequest eventRequest, Long userId) {
-        User user = userRepository.findById(userId).orElse(null);
-
-        // エラー処理は後で実装
-        if (user == null) {
-            return null;
-        }
+        User user = userRepository.findById(userId).orElseThrow(() -> new BusinessException("該当のユーザーは存在しません"));
 
         Event event = new Event();
 
@@ -59,12 +54,7 @@ public class AdminEventService {
     }
 
     public EventResponse editEventById(EventRequest eventRequest, Long id) {
-        Event event = eventRepository.findById(id).orElse(null);
-
-        // エラー処理は後で実装
-        if (event == null) {
-            return null;
-        }
+        Event event = eventRepository.findById(id).orElseThrow(() -> new BusinessException("該当のイベントは存在しません"));
 
         event.setName(eventRequest.getName());
         event.setOverview(eventRequest.getOverview());
@@ -77,8 +67,9 @@ public class AdminEventService {
     }
 
     public void deleteEventById(Long id) {
-        if (eventRepository.existsById(id)) {
-            eventRepository.deleteById(id);
+        if (!eventRepository.existsById(id)) {
+            throw new BusinessException("該当のイベントは既に存在していません");
         }
+        eventRepository.deleteById(id);
     }
 }
