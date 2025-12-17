@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.backend.dto.common.ApiResponse;
 import com.example.backend.dto.requests.EventRequest;
 import com.example.backend.dto.response.EventResponse;
+import com.example.backend.service.admin.AdminEventService;
 
 import jakarta.validation.Valid;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -23,26 +23,28 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RestController
 @RequestMapping("/admin/event")
 public class AdminEventController {
+    private final AdminEventService adminEventService;
+
+    public AdminEventController(AdminEventService adminEventService) {
+        this.adminEventService = adminEventService;
+    }
+
     @GetMapping
     public ResponseEntity<ApiResponse<List<EventResponse>>> getAllEvent() {
-        // イベント取得処理は後で実装する
-        List<EventResponse> responses = new ArrayList<>();
+        List<EventResponse> responses = adminEventService.getAllEvent();
         return ResponseEntity.ok(ApiResponse.success(responses));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<EventResponse>> getEventById(@Valid @RequestBody EventRequest eventRequest,
-            @PathVariable Long id) {
-        // イベント取得処理は後で実装する
-        EventResponse eventResponse = new EventResponse();
+    public ResponseEntity<ApiResponse<EventResponse>> getEventById(@PathVariable Long id) {
+        EventResponse eventResponse = adminEventService.getEventById(id);
         return ResponseEntity.ok(ApiResponse.success(eventResponse));
     }
 
     @PostMapping("/{userId}")
     public ResponseEntity<ApiResponse<EventResponse>> createEvent(@Valid @RequestBody EventRequest eventRequest,
             @PathVariable Long userId) {
-        // イベント作成処理は後で実装する
-        EventResponse eventResponse = new EventResponse();
+        EventResponse eventResponse = adminEventService.createEvent(eventRequest, userId);
 
         return ResponseEntity.ok(ApiResponse.success(eventResponse));
     }
@@ -50,14 +52,13 @@ public class AdminEventController {
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<EventResponse>> editEventById(@Valid @RequestBody EventRequest eventRequest,
             @PathVariable Long id) {
-        // イベント編集処理は後で実装する
-        EventResponse eventResponse = new EventResponse();
+        EventResponse eventResponse = adminEventService.editEventById(eventRequest, id);
         return ResponseEntity.ok(ApiResponse.success(eventResponse));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteEventById(@PathVariable Long id) {
-        // イベント削除処理は後で実装する
+        adminEventService.deleteEventById(id);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 

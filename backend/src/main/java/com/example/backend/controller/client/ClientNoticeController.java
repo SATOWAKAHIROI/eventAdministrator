@@ -13,24 +13,29 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.backend.dto.common.ApiResponse;
 import com.example.backend.dto.requests.NoticeRequest;
 import com.example.backend.dto.response.NoticeResponse;
+import com.example.backend.service.client.ClientNoticeService;
 
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/client/notice")
 public class ClientNoticeController {
+    private final ClientNoticeService clientNoticeService;
+
+    public ClientNoticeController(ClientNoticeService clientNoticeService) {
+        this.clientNoticeService = clientNoticeService;
+    }
+
     @GetMapping()
     public ResponseEntity<ApiResponse<List<NoticeResponse>>> getAllNotice() {
-        // お知らせ取得処理は後で実装する
-        List<NoticeResponse> responses = new ArrayList<>();
+        List<NoticeResponse> responses = clientNoticeService.getAllNotice();
         return ResponseEntity.ok(ApiResponse.success(responses));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<NoticeResponse>> getNoticeById(@Valid @RequestBody NoticeRequest noticeRequest,
             @PathVariable Long id) {
-        // お知らせ取得処理は後で実装する
-        NoticeResponse noticeResponse = new NoticeResponse();
+        NoticeResponse noticeResponse = clientNoticeService.getNoticeById(id);
 
         return ResponseEntity.ok(ApiResponse.success(noticeResponse));
     }
