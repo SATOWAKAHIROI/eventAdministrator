@@ -104,8 +104,9 @@ public class JwtTokenProvider {
                             .build()
                             .parseClaimsJws(token)
                             .getBody();
-        
-        return claims.get("userRole", RoleType.class);
+
+        String roleString = claims.get("userRole", String.class);
+        return RoleType.valueOf(roleString);
     }
 
     /**

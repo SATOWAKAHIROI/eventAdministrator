@@ -45,7 +45,7 @@ services:
     ports:
       - "3001:3001"
     volumes:
-      - ./adminPage:/app
+      - ./clientPage:/app
       - /app/node_modules
     depends_on:
       - backend

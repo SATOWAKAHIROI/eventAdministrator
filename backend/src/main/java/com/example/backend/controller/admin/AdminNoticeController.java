@@ -10,7 +10,6 @@ import com.example.backend.service.admin.AdminNoticeService;
 
 import jakarta.validation.Valid;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
