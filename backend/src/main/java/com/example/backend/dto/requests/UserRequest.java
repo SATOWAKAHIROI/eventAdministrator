@@ -20,7 +20,6 @@ public class UserRequest {
     @Size(min = 8, max = 100)
     private String password;
 
-    @NotBlank
     private RoleType userRole;
 
     public String getName() {
