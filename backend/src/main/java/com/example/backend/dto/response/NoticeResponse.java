@@ -13,6 +13,7 @@ public class NoticeResponse {
         NoticeResponse noticeResponse = new NoticeResponse();
 
         noticeResponse.setId(notice.getId());
+        noticeResponse.setSubject(notice.getSubject());
         noticeResponse.setBody(notice.getBody());
         noticeResponse.setCreatedBy(UserResponse.from(notice.getCreatedBy()));
         noticeResponse.setUpdatedAt(notice.getUpdatedAt().toLocalDate().toString());
