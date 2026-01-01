@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.backend.dto.requests.LoginRequest;
-import com.example.backend.dto.requests.UserRequest;
+import com.example.backend.dto.requests.UserCreateRequest;
+import com.example.backend.dto.requests.UserUpdateRequest;
 import com.example.backend.dto.response.AuthResponse;
 import com.example.backend.dto.response.UserResponse;
 import com.example.backend.service.client.ClientUserService;
@@ -36,8 +37,8 @@ public class ClientUserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse<UserResponse>> userCreate(@Valid @RequestBody UserRequest userRequest) {
-        UserResponse userResponse = clientUserService.createUser(userRequest);
+    public ResponseEntity<ApiResponse<UserResponse>> userCreate(@Valid @RequestBody UserCreateRequest userCreateRequest) {
+        UserResponse userResponse = clientUserService.createUser(userCreateRequest);
 
         return ResponseEntity.ok(ApiResponse.success(userResponse));
     }
@@ -49,9 +50,9 @@ public class ClientUserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<UserResponse>> editUserbyId(@Valid @RequestBody UserRequest userRequest,
+    public ResponseEntity<ApiResponse<UserResponse>> editUserbyId(@Valid @RequestBody UserUpdateRequest userUpdateRequest,
             @PathVariable Long id) {
-        UserResponse userResponse = clientUserService.editUserById(userRequest, id);
+        UserResponse userResponse = clientUserService.editUserById(userUpdateRequest, id);
         return ResponseEntity.ok(ApiResponse.success(userResponse));
     }
 

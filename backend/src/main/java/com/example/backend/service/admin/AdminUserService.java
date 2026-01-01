@@ -6,7 +6,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.example.backend.dto.requests.LoginRequest;
-import com.example.backend.dto.requests.UserRequest;
+import com.example.backend.dto.requests.UserCreateRequest;
+import com.example.backend.dto.requests.UserUpdateRequest;
 import com.example.backend.dto.response.AuthResponse;
 import com.example.backend.dto.response.UserResponse;
 import com.example.backend.entity.User;
@@ -63,20 +64,21 @@ public class AdminUserService {
         return UserResponse.from(user);
     }
 
-    public UserResponse createUser(UserRequest userRequest) {
-        if (userRepository.existsByEmail(userRequest.getEmail())) {
+    public UserResponse createUser(UserCreateRequest userCreateRequest) {
+        if (userRepository.existsByEmail(userCreateRequest.getEmail())) {
             throw new BusinessException("そのメールアドレスはすでに他のユーザーが使用しています");
         }
 
-        if (userRequest.getPassword() == null || userRequest.getPassword().trim().isEmpty()) {
-            throw new BusinessException("パスワードは必須です");
+        // パスワードの長さチェック
+        if (userCreateRequest.getPassword().length() < 8 || userCreateRequest.getPassword().length() > 100) {
+            throw new BusinessException("パスワードは8文字以上100文字以下で入力してください");
         }
 
         User user = new User();
 
-        user.setName(userRequest.getName());
-        user.setEmail(userRequest.getEmail());
-        user.setPassword(userRequest.getPassword());
+        user.setName(userCreateRequest.getName());
+        user.setEmail(userCreateRequest.getEmail());
+        user.setPassword(userCreateRequest.getPassword());
         user.setUserRole(RoleType.ADMIN);
 
         userRepository.save(user);
@@ -84,28 +86,32 @@ public class AdminUserService {
         return UserResponse.from(user);
     }
 
-    public UserResponse editUserById(UserRequest userRequest, Long id) {
+    public UserResponse editUserById(UserUpdateRequest userUpdateRequest, Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new BusinessException("該当するユーザーが見つかりません"));
 
-        boolean isExistsEmail = userRepository.existsByEmail(userRequest.getEmail());
-        boolean isEqualEmail = user.getEmail().equals(userRequest.getEmail());
+        boolean isExistsEmail = userRepository.existsByEmail(userUpdateRequest.getEmail());
+        boolean isEqualEmail = user.getEmail().equals(userUpdateRequest.getEmail());
 
         // 指定したメールアドレスがすでに存在し、かつ自身でない場合
         if (isExistsEmail && !isEqualEmail) {
             throw new BusinessException("そのメールアドレスはすでに他のユーザーが使用しています");
         }
 
-        user.setName(userRequest.getName());
-        user.setEmail(userRequest.getEmail());
+        user.setName(userUpdateRequest.getName());
+        user.setEmail(userUpdateRequest.getEmail());
 
         // パスワードが入力されている場合のみ更新
-        if (userRequest.getPassword() != null && !userRequest.getPassword().trim().isEmpty()) {
-            user.setPassword(userRequest.getPassword());
+        if (userUpdateRequest.getPassword() != null && !userUpdateRequest.getPassword().trim().isEmpty()) {
+            // パスワードの長さチェック
+            if (userUpdateRequest.getPassword().length() < 8 || userUpdateRequest.getPassword().length() > 100) {
+                throw new BusinessException("パスワードは8文字以上100文字以下で入力してください");
+            }
+            user.setPassword(userUpdateRequest.getPassword());
         }
 
         // ユーザーロールが指定されている場合のみ更新
-        if (userRequest.getUserRole() != null) {
-            user.setUserRole(userRequest.getUserRole());
+        if (userUpdateRequest.getUserRole() != null) {
+            user.setUserRole(userUpdateRequest.getUserRole());
         }
 
         userRepository.save(user);

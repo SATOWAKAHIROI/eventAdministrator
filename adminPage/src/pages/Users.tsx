@@ -25,7 +25,6 @@ export default function Users() {
   const [loading, setLoading] = useState<boolean>(false);
   const [showModel, setShowModel] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-  const [formError, setFormError] = useState<string>("");
   const [editingUser, setEditingUser] = useState<User | null>(null);
 
   const { user: currentUser } = useAuth();
@@ -52,6 +51,10 @@ export default function Users() {
   };
 
   const handleEdit = (user: User) => {
+    if (user.email === currentUser!.email) {
+      window.confirm("自分を編集することは出来ません。");
+      return;
+    }
     setEditingUser(user);
     setFormData({
       name: user.name,
@@ -105,9 +108,9 @@ export default function Users() {
     } catch (err: any) {
       // エラーレスポンスからメッセージを取得
       if (err.response?.data?.error?.message) {
-        setFormError(err.response.data.error.message);
+        window.confirm(err.response.data.error.message);
       } else {
-        setFormError("ユーザー情報の更新に失敗しました。(サーバーエラー)");
+        window.confirm("ユーザー情報の更新に失敗しました。(サーバーエラー)");
       }
     } finally {
       setEditingUser(null);
@@ -246,12 +249,6 @@ export default function Users() {
                     </svg>
                   </button>
                 </div>
-
-                {formError && (
-                  <div className="mb-6 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg">
-                    <p className="text-sm">{formError}</p>
-                  </div>
-                )}
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
