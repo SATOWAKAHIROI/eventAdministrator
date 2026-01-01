@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import adminUserService from "../service/adminUserService";
+import { useAuth } from "../hooks/useAuth";
 
 type User = {
   id: number;
@@ -26,6 +27,8 @@ export default function Users() {
   const [error, setError] = useState<string>("");
   const [formError, setFormError] = useState<string>("");
   const [editingUser, setEditingUser] = useState<User | null>(null);
+
+  const { user: currentUser } = useAuth();
 
   useEffect(() => {
     fetchUserList();
@@ -59,7 +62,13 @@ export default function Users() {
   };
 
   const handleDelete = async (user: User) => {
-    if (!window.confirm(`「${user.name}」を本当に削除してもよろしいでしょうか？`)) {
+    if (user.email === currentUser!.email) {
+      window.confirm("自分を削除することは出来ません。");
+      return;
+    }
+    if (
+      !window.confirm(`「${user.name}」を本当に削除してもよろしいでしょうか？`)
+    ) {
       return;
     }
 
@@ -150,7 +159,10 @@ export default function Users() {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {userList.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-50 transition-colors">
+                  <tr
+                    key={user.id}
+                    className="hover:bg-gray-50 transition-colors"
+                  >
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {user.id}
                     </td>
@@ -190,8 +202,18 @@ export default function Users() {
           </div>
         ) : (
           <div className="bg-white rounded-xl shadow-md p-12 text-center">
-            <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+            <svg
+              className="w-16 h-16 text-gray-400 mx-auto mb-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+              />
             </svg>
             <p className="text-gray-500">ユーザーは登録されていません</p>
           </div>
@@ -209,8 +231,18 @@ export default function Users() {
                     onClick={() => setShowModel(false)}
                     className="text-gray-400 hover:text-gray-600 transition-colors"
                   >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
                     </svg>
                   </button>
                 </div>
@@ -223,7 +255,10 @@ export default function Users() {
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="name"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       名前
                     </label>
                     <input
@@ -241,7 +276,10 @@ export default function Users() {
                   </div>
 
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       メールアドレス
                     </label>
                     <input
@@ -259,7 +297,10 @@ export default function Users() {
                   </div>
 
                   <div>
-                    <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="password"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       パスワード
                     </label>
                     <input
