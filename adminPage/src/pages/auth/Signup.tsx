@@ -47,6 +47,8 @@ export default function Signup() {
         setError(response.error.message);
         return;
       }
+
+      navigate("/home", { replace: true });
     } catch (err: any) {
       if (err.response?.data?.error?.message) {
         setError(err.response.data.error.message);
