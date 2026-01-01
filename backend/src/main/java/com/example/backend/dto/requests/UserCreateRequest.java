@@ -1,12 +1,10 @@
 package com.example.backend.dto.requests;
 
-import com.example.backend.entity.User.RoleType;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public class UserRequest {
+public class UserCreateRequest {
     @NotBlank
     @Size(max = 100)
     private String name;
@@ -16,10 +14,9 @@ public class UserRequest {
     @Size(max = 100)
     private String email;
 
+    @NotBlank
     @Size(min = 8, max = 100)
     private String password;
-
-    private RoleType userRole;
 
     public String getName() {
         return name;
@@ -43,13 +40,5 @@ public class UserRequest {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public RoleType getUserRole() {
-        return userRole;
-    }
-
-    public void setUserRole(RoleType userRole) {
-        this.userRole = userRole;
     }
 }
