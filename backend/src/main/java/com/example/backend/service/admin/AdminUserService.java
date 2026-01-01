@@ -68,6 +68,10 @@ public class AdminUserService {
             throw new BusinessException("そのメールアドレスはすでに他のユーザーが使用しています");
         }
 
+        if (userRequest.getPassword() == null || userRequest.getPassword().trim().isEmpty()) {
+            throw new BusinessException("パスワードは必須です");
+        }
+
         User user = new User();
 
         user.setName(userRequest.getName());
@@ -93,8 +97,16 @@ public class AdminUserService {
 
         user.setName(userRequest.getName());
         user.setEmail(userRequest.getEmail());
-        user.setPassword(userRequest.getPassword());
-        user.setUserRole(userRequest.getUserRole());
+
+        // パスワードが入力されている場合のみ更新
+        if (userRequest.getPassword() != null && !userRequest.getPassword().trim().isEmpty()) {
+            user.setPassword(userRequest.getPassword());
+        }
+
+        // ユーザーロールが指定されている場合のみ更新
+        if (userRequest.getUserRole() != null) {
+            user.setUserRole(userRequest.getUserRole());
+        }
 
         userRepository.save(user);
 
