@@ -78,6 +78,10 @@ export default function Events() {
   };
 
   const handleDelete = async (event: Event) => {
+    if (!window.confirm(`「${event.name}」を本当に削除してもよろしいでしょうか？`)) {
+      return;
+    }
+
     setLoading(true);
 
     try {

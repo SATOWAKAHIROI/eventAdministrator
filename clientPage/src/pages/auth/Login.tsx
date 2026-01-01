@@ -32,13 +32,8 @@ export default function Login() {
       if (!response.success) {
         return;
       }
-      if (response.data.userRole !== "ADMIN") {
-        setError("このサイトは管理者ユーザーでないとログイン出来ません。");
-        return;
-      }
       navigate("/home", { replace: true });
     } catch (err: any) {
-      // エラーレスポンスからメッセージを取得
       if (err.response?.data?.error?.message) {
         setError(err.response.data.error.message);
       } else {
@@ -50,14 +45,14 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-teal-100">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
         <div>
           <h1 className="text-3xl font-bold text-center text-gray-900">
             ログイン
           </h1>
           <p className="mt-2 text-center text-sm text-gray-600">
-            管理者ページにアクセス
+            クライアントページにアクセス
           </p>
         </div>
 
@@ -86,7 +81,7 @@ export default function Login() {
                 onChange={(e) =>
                   setFormData({ ...formData, email: e.target.value })
                 }
-                className="appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
               />
             </div>
 
@@ -106,7 +101,7 @@ export default function Login() {
                 onChange={(e) =>
                   setFormData({ ...formData, password: e.target.value })
                 }
-                className="appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
               />
             </div>
           </div>
@@ -114,7 +109,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {loading ? "ログイン中..." : "ログイン"}
           </button>
@@ -123,7 +118,7 @@ export default function Login() {
         <div className="text-center">
           <Link
             to="/signup"
-            className="text-sm text-indigo-600 hover:text-indigo-500 font-medium"
+            className="text-sm text-green-600 hover:text-green-500 font-medium"
           >
             ユーザー作成はこちらから
           </Link>

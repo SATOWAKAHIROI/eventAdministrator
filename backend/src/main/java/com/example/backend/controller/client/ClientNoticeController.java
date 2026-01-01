@@ -1,6 +1,5 @@
 package com.example.backend.controller.client;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
