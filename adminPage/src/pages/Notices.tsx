@@ -69,6 +69,10 @@ export default function Notices() {
   };
 
   const handleDelete = async (notice: Notice) => {
+    if (!window.confirm(`「${notice.subject}」を本当に削除してもよろしいでしょうか？`)) {
+      return;
+    }
+
     setLoading(true);
 
     try {

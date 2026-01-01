@@ -5,11 +5,11 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">管理者ダッシュボード</h1>
-          <p className="text-lg text-gray-600">イベントとお知らせを管理</p>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">クライアントダッシュボード</h1>
+          <p className="text-lg text-gray-600">イベントとお知らせを確認</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Link
             to="/events"
             className="group bg-white p-8 rounded-xl shadow-md hover:shadow-xl transition-shadow border border-gray-200 hover:border-indigo-500"
@@ -21,7 +21,7 @@ export default function Home() {
                 </svg>
               </div>
               <h2 className="text-xl font-semibold text-gray-900 mb-2">イベント一覧</h2>
-              <p className="text-gray-600 text-sm">イベントの作成・編集・削除</p>
+              <p className="text-gray-600 text-sm">開催予定のイベントを確認</p>
             </div>
           </Link>
 
@@ -36,22 +36,7 @@ export default function Home() {
                 </svg>
               </div>
               <h2 className="text-xl font-semibold text-gray-900 mb-2">お知らせ</h2>
-              <p className="text-gray-600 text-sm">お知らせの作成・編集・削除</p>
-            </div>
-          </Link>
-
-          <Link
-            to="/users"
-            className="group bg-white p-8 rounded-xl shadow-md hover:shadow-xl transition-shadow border border-gray-200 hover:border-blue-500"
-          >
-            <div className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-blue-200 transition-colors">
-                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-              </div>
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">ユーザー管理</h2>
-              <p className="text-gray-600 text-sm">ユーザーの閲覧・編集・削除</p>
+              <p className="text-gray-600 text-sm">重要なお知らせを確認</p>
             </div>
           </Link>
 
@@ -66,7 +51,7 @@ export default function Home() {
                 </svg>
               </div>
               <h2 className="text-xl font-semibold text-gray-900 mb-2">このページの概要</h2>
-              <p className="text-gray-600 text-sm">管理画面の使い方を確認</p>
+              <p className="text-gray-600 text-sm">ページの使い方を確認</p>
             </div>
           </Link>
         </div>

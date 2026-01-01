@@ -3,11 +3,7 @@ import api from "../utils/api";
 const adminUserService = {
   async login(email: string, password: string) {
     const response = await api.post("admin/user/login", { email, password });
-    console.log("ここ");
     const { data } = response;
-
-    // データの中身を確かめるために表示
-    console.log(data);
 
     if (data.data.token) {
       localStorage.setItem("token", data.data.token);
