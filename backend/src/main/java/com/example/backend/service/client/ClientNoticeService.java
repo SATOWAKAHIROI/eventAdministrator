@@ -10,7 +10,10 @@ import com.example.backend.entity.Notice;
 import com.example.backend.exception.BusinessException;
 import com.example.backend.repository.NoticeRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
+@Transactional
 public class ClientNoticeService {
     private final NoticeRepository noticeRepository;
 
