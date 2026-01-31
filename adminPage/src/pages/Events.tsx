@@ -118,7 +118,6 @@ export default function Events() {
           formData.overview,
           formData.startDate,
           formData.endDate,
-          user!.id
         );
       }
     } catch (err: any) {

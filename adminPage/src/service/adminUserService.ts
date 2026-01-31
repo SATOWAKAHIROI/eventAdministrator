@@ -21,9 +21,6 @@ const adminUserService = {
     });
     const { data } = response;
 
-    // データの中身を確かめるために表示
-    console.log(data);
-
     return data;
   },
 
@@ -31,8 +28,6 @@ const adminUserService = {
     const response = await api.get("admin/user");
     const { data } = response;
 
-    // データの中身を確かめるために表示
-    console.log(data);
     return data;
   },
 
@@ -40,8 +35,6 @@ const adminUserService = {
     const response = await api.get(`admin/user/${id}`);
     const { data } = response;
 
-    // データの中身を確かめるために表示
-    console.log(data);
     return data;
   },
 
@@ -53,8 +46,6 @@ const adminUserService = {
     });
     const { data } = response;
 
-    // データの中身を確かめるために表示
-    console.log(data);
     return data;
   },
 
@@ -62,8 +53,6 @@ const adminUserService = {
     const response = await api.delete(`admin/user/${id}`);
     const { data } = response;
 
-    // データの中身を確かめるために表示
-    console.log(data);
     return data;
   },
 

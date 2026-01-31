@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.backend.dto.common.ApiResponse;
 import com.example.backend.dto.requests.EventRequest;
 import com.example.backend.dto.response.EventResponse;
+import com.example.backend.security.JwtTokenProvider.UserPrincipal;
 import com.example.backend.service.admin.AdminEventService;
 
 import jakarta.validation.Valid;
@@ -13,6 +14,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,9 +43,11 @@ public class AdminEventController {
         return ResponseEntity.ok(ApiResponse.success(eventResponse));
     }
 
-    @PostMapping("/{userId}")
+    @PostMapping
     public ResponseEntity<ApiResponse<EventResponse>> createEvent(@Valid @RequestBody EventRequest eventRequest,
-            @PathVariable Long userId) {
+            Authentication authentication) {
+        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+        Long userId = principal.getUserId();
         EventResponse eventResponse = adminEventService.createEvent(eventRequest, userId);
 
         return ResponseEntity.ok(ApiResponse.success(eventResponse));

@@ -13,7 +13,10 @@ import com.example.backend.exception.BusinessException;
 import com.example.backend.repository.EventRepository;
 import com.example.backend.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
+@Transactional
 public class AdminEventService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
