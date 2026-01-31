@@ -96,7 +96,7 @@ export default function Notices() {
 
     try {
       if (!!editingNotice) {
-        await adminNoticeService.editEventById(
+        await adminNoticeService.editNoticeById(
           formData.subject,
           formData.body,
           editingNotice.id
@@ -105,7 +105,6 @@ export default function Notices() {
         await adminNoticeService.createNotice(
           formData.subject,
           formData.body,
-          user!.id
         );
       }
     } catch (err: any) {

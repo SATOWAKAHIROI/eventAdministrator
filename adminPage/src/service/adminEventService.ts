@@ -17,9 +17,8 @@ const adminEventService = {
     overview: string,
     startDate: string,
     endDate: string,
-    userId: number
   ) {
-    const response = await api.post(`admin/event/${userId}`, {
+    const response = await api.post(`admin/event`, {
       name,
       overview,
       startDate,

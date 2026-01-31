@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.backend.dto.common.ApiResponse;
 import com.example.backend.dto.requests.NoticeRequest;
 import com.example.backend.dto.response.NoticeResponse;
+import com.example.backend.security.JwtTokenProvider.UserPrincipal;
 import com.example.backend.service.admin.AdminNoticeService;
 
 import jakarta.validation.Valid;
@@ -13,6 +14,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,9 +45,11 @@ public class AdminNoticeController {
         return ResponseEntity.ok(ApiResponse.success(noticeResponse));
     }
 
-    @PostMapping("/{userId}")
+    @PostMapping
     public ResponseEntity<ApiResponse<NoticeResponse>> createNotice(@Valid @RequestBody NoticeRequest noticeRequest,
-            @PathVariable Long userId) {
+            Authentication authentication) {
+        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+        Long userId = principal.getUserId();
         NoticeResponse noticeResponse = adminNoticeService.createNotice(noticeRequest, userId);
 
         return ResponseEntity.ok(ApiResponse.success(noticeResponse));

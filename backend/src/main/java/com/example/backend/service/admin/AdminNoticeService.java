@@ -13,7 +13,10 @@ import com.example.backend.exception.BusinessException;
 import com.example.backend.repository.NoticeRepository;
 import com.example.backend.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
+@Transactional
 public class AdminNoticeService {
     private final NoticeRepository noticeRepository;
     private final UserRepository userRepository;
