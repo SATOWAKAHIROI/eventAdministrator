@@ -1,5 +1,6 @@
 package com.example.backend.service.client;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.backend.dto.requests.LoginRequest;
@@ -14,21 +15,27 @@ import com.example.backend.exception.UnauthorizedException;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.security.JwtTokenProvider;
 
+import jakarta.transaction.Transactional;
+
 @Service
+@Transactional
 public class ClientUserService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final PasswordEncoder passwordEncoder;
 
-    public ClientUserService(UserRepository userRepository, JwtTokenProvider jwtTokenProvider) {
+    public ClientUserService(UserRepository userRepository, JwtTokenProvider jwtTokenProvider,
+            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public AuthResponse login(LoginRequest loginRequest) {
         User user = userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new UnauthorizedException("メールアドレスまたはパスワードが正しくありません"));
 
-        boolean passCheck = user.getPassword().equals(loginRequest.getPassword());
+        boolean passCheck = passwordEncoder.matches(loginRequest.getPassword(), user.getPassword());
 
         if (!passCheck) {
             throw new UnauthorizedException("メールアドレスまたはパスワードが正しくありません");
@@ -55,7 +62,7 @@ public class ClientUserService {
 
         user.setName(userCreateRequest.getName());
         user.setEmail(userCreateRequest.getEmail());
-        user.setPassword(userCreateRequest.getPassword());
+        user.setPassword(passwordEncoder.encode(userCreateRequest.getPassword()));
         user.setUserRole(RoleType.VIEWER);
 
         userRepository.save(user);
@@ -89,7 +96,7 @@ public class ClientUserService {
             if (userUpdateRequest.getPassword().length() < 8 || userUpdateRequest.getPassword().length() > 100) {
                 throw new BusinessException("パスワードは8文字以上100文字以下で入力してください");
             }
-            user.setPassword(userUpdateRequest.getPassword());
+            user.setPassword(passwordEncoder.encode(userUpdateRequest.getPassword()));
         }
 
         // ユーザーロールが指定されている場合のみ更新
@@ -106,6 +113,6 @@ public class ClientUserService {
         if (!userRepository.existsById(id)) {
             throw new BusinessException("該当のユーザーはすでに存在していません");
         }
-        deleteUserById(id);
+        userRepository.deleteById(id);
     }
 }

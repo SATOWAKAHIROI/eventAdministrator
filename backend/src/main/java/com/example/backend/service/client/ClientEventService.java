@@ -10,7 +10,10 @@ import com.example.backend.entity.Event;
 import com.example.backend.exception.BusinessException;
 import com.example.backend.repository.EventRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
+@Transactional
 public class ClientEventService {
     private final EventRepository eventRepository;
 
