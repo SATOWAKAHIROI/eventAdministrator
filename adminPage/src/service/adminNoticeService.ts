@@ -12,16 +12,16 @@ const adminNoticeService = {
     return response.data;
   },
 
-  async createNotice(subject: string, body: string, userId: number) {
-    const resposne = await api.post(`admin/notice/${userId}`, {
+  async createNotice(subject: string, body: string) {
+    const response = await api.post(`admin/notice`, {
       subject,
       body,
     });
 
-    return resposne.data;
+    return response.data;
   },
 
-  async editEventById(subject: string, body: string, id: number) {
+  async editNoticeById(subject: string, body: string, id: number) {
     const response = await api.put(`admin/notice/${id}`, { subject, body });
 
     return response.data;
